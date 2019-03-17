@@ -45,17 +45,19 @@ def main_menu():
 
 def show_demo():
     xbmcplugin.setContent(int(sys.argv[1]), 'movies')
-    listitem = xbmcgui.ListItem('Demo video file',
-                                path=VIDEO_FILE_PATH)
-    # PROOF-OF-CONCEPT: Let's add a resume point
-    listitem.setProperty("totaltime", str(TOTAL_LENGTH))
-    listitem.setProperty("resumetime", str(RESUME))
-    listitem.setProperty("StartOffset", str(RESUME))
-    # END
+    listitem = xbmcgui.ListItem('Demo video file')
+
+    listitem.setProperty("isPlayable", "true")
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),
-                                url=VIDEO_FILE_PATH,
-                                listitem=listitem)
+                                url='%s/?mode=play' % PLUGIN_PATH,
+                                listitem=listitem,
+                                isFolder=False)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+def play():
+    listitem = xbmcgui.ListItem('Demo video file')
+    listitem.setPath(VIDEO_FILE_PATH)
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
 
 
 if __name__ == '__main__':
@@ -65,5 +67,7 @@ if __name__ == '__main__':
     mode = args.get('mode')
     if mode == 'demo':
         show_demo()
+    elif mode == 'play':
+        play()
     else:
         main_menu()
